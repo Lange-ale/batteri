@@ -29,8 +29,7 @@ public class Aids extends main.Batterio{
         }
 
         if (goSide) { x++;
-            if (x > Food.getHeight()) { goSide = false; x = Food.getHeight() - 1; }
-        }
+            if (x > Food.getHeight()) { goSide = false; x = Food.getHeight() - 1; }}
         else { x--;
             if (x < 0) {
                 goSide = true;
