@@ -3,74 +3,96 @@ package children;
 import main.*;
 
 public class Zlange extends Batterio {
-    private final static Thread calcolatoreConvenienza = new Thread(new CalcolatoreConvenienza());
-    private static boolean istanziato = false;
-    private final static int pxMTot = 160;
-    private static int[][] mTot;
-    private final static int pxMParz = 40;
-    private static int[][] mParz;
+    //posizione iniziale dei 100 batteri
+    private static final int bPerRiga = (int) Math.sqrt(mainForm.getNumeroBatteriIniziali()) +
+            (Math.sqrt(mainForm.getNumeroBatteriIniziali()) == 0 ? 0 : 1);
+    private static final int nRighe = mainForm.getNumeroBatteriIniziali() / bPerRiga +
+            (mainForm.getNumeroBatteriIniziali() % bPerRiga == 0 ? 0 : 1);
+    private static final int xDistanza = Food.getWidth() / bPerRiga, yDistanza = Food.getHeight() / (nRighe);
+    private static int NextX = xDistanza / 2, NextY = yDistanza / 2;
+    //proprieta'
+    private static final int visione = 300;
+    private boolean muoviSuX;
+    private boolean sensoOrario;
+    private final static int raggio = 40;
+    private final int[] centro;
 
-    boolean destra = true;
 
     // mainForm.;
-    //Food.:
+    //Food.:     1024, 640
     //Batterio.;
 
     public Zlange() {
-        if (!istanziato) {
-            istanziato = true;
-            mTot = new int[Food.getHeight() / pxMTot + 1][Food.getWidth() / pxMTot + 1];
-            mParz = new int[Food.getHeight() / pxMParz + 1][Food.getWidth() / pxMParz + 1];
-            Zlange.calcolatoreConvenienza.start();
+        x = NextX;
+        y = NextY;
+        NextX += xDistanza;
+        if (NextX >= Food.getWidth()) {
+            NextY += yDistanza;
+            NextX = xDistanza / 2;
         }
+        //System.out.println(x + "  " + y);
+        //System.out.println(nRighe + " " + yDistanza);
+        sensoOrario = true;
+        muoviSuX = true;
+        centro = new int[]{x, y + raggio};
     }
 
+    void vaiIn(int x, int y) {
+        this.x = x;
+        this.y = y;
+        centro[0] = x;
+        centro[1] = y + raggio;
+        if (centro[1] > Food.getHeight())
+            centro[1] = y - raggio;
+
+        //TODO aggiorna la mappa di dov'e' il cibo
+    }
 
     @Override
     protected void move() throws Exception {
-        System.out.println(mParz[y / pxMParz][x / pxMParz]);
-        if (mParz[y / pxMParz][x / pxMParz] > 0) {
-            for (int i = 1; i < pxMParz; i++) {
-                if (Food.isFood(x, y + i)) { y += i; return;}
-                if (Food.isFood(x, y - i)) { y -= i; return;}
-                if (Food.isFood(x + i, y)) { x += i; return;}
-                if (Food.isFood(x - i, y)) { x -= i; return;}
-                if (Food.isFood(x + i, y + i)) { x += i; y += i; return;}
-                if (Food.isFood(x - i, y - i)) { x -= i; y -= i; return;}
-                if (Food.isFood(x + i, y - i)) { x += i; y -= i; return;}
-                if (Food.isFood(x - i, y + i)) { x -= i; y += i; return;}
-            }
+        System.out.println("Zlange: " + getHealth());
+        int d = 1;
+        int v = visione < getHealth() ? visione : getHealth() - 1;
+        for (int i = 1; i < v; i += 4) {
+            if (Food.isFood(x, y + i)) { vaiIn(x, y += i); return; }
+            if (Food.isFood(x, y - i)) { vaiIn(x, y -= i); return; }
+            if (Food.isFood(x + i, y)) { vaiIn(x + i, y); return; }
+            if (Food.isFood(x - i, y)) { vaiIn(x - i, y); return; }
+            if (Food.isFood(x + d, y + d)) { vaiIn(x + d, y + d); return; }
+            if (Food.isFood(x - d, y - d)) { vaiIn(x - d, y - d); return; }
+            if (Food.isFood(x + d, y - d)) { vaiIn(x + d, y - d); return; }
+            if (Food.isFood(x - d, y + d)) { vaiIn(x - d, y + d); return; }
+            d += 2;
         }
-        if(destra) x++;
-        else x--;
-        if(x>=Food.getWidth() || x<=0) destra = !destra;
+
+        if (muoviSuX) {
+            if (sensoOrario)
+                x += y < centro[1] ? 1 : -1;
+            else
+                x += y < centro[1] ? -1 : +1;
+        } else {
+            if (sensoOrario)
+                y += x < centro[0] ? -1 : +1;
+            else
+                y += x < centro[0] ? +1 : -1;
+        }
+        muoviSuX = !muoviSuX;
+        if (x >= Food.getWidth() || x <= 0 || y >= Food.getHeight() || y <= 0) {
+            sensoOrario = !sensoOrario;
+            muoviSuX = !muoviSuX;
+        }
     }
 
-    private static class CalcolatoreConvenienza implements Runnable {
-        public void run() {
-            while (true) {
-                int[][] nuovaParz = new int[mParz.length][mParz[0].length];
-                for (int r = 0; r < Food.getHeight(); r++)
-                    for (int c = 0; c < Food.getWidth(); c++)
-                        nuovaParz[r / pxMParz][c / pxMParz] += Food.isFood(c, r) ? 1 : 0;
-                int[][] nuovaTot = new int[mTot.length][mTot[0].length];
-                int parzialiInTot = pxMTot / pxMParz;
-                for (int r = 0; r < nuovaParz.length; r++)
-                    for (int c = 0; c < nuovaParz[0].length; c++)
-                        nuovaTot[r / parzialiInTot][c / parzialiInTot] += nuovaParz[r][c];
-                synchronized (mTot) {
-                    mTot = nuovaTot;
-                }
-                synchronized (mParz) {
-                    mParz = nuovaParz;
-                }
-/*
-                for (int r = 0; r < nuovaTot.length; r++)
-                    System.out.println(Arrays.toString(nuovaTot[r]));
-                System.out.println("-\n-\n-\n");
+    private double distDaO(int x, int y) {
+        return Math.sqrt(Math.pow(x - centro[0], 2) + Math.pow(y - centro[1], 2));
+    }
 
- */
-            }
-        }
+    @Override
+    protected Batterio clone() throws CloneNotSupportedException {
+        Zlange clone = (Zlange) super.clone();
+        clone.sensoOrario = !clone.sensoOrario;
+        if (centro[1] > y)
+            clone.centro[1] = y - raggio;
+        return clone;
     }
 }
