@@ -2,7 +2,7 @@ package children;
 
 import main.*;
 
-public class TikTok extends Batterio {
+public class AA extends Batterio {
     //posizione iniziale dei 100 batteri
     private static final int bPerRiga = (int) Math.sqrt(mainForm.getNumeroBatteriIniziali()) +
             (Math.sqrt(mainForm.getNumeroBatteriIniziali()) == 0 ? 0 : 1);
@@ -38,11 +38,7 @@ public class TikTok extends Batterio {
     //Food.:     1024, 640
     //Batterio.;
 
-    public TikTok() {
-        xx=new int[16][16];
-        yy=new int[16][16];
-        creaGrigliaX();
-        creaGrigliaY();
+    public AA() {
         x = NextX;
         y = NextY;
         NextX += xDistanza;
@@ -50,10 +46,11 @@ public class TikTok extends Batterio {
             NextY += yDistanza;
             NextX = xDistanza / 2;
         }
+        //System.out.println(x + "  " + y);
+        //System.out.println(nRighe + " " + yDistanza);
         sensoOrario = true;
         muoviSuX = true;
         centro = new int[]{x, y + raggio};
-
     }
 
     void vaiIn(int x, int y) {
@@ -101,10 +98,12 @@ public class TikTok extends Batterio {
             sensoOrario = !sensoOrario;
             muoviSuX = !muoviSuX;
         }
-        for (int i = 0; i < 1024; i+=64) {
-            for (int j = 0; j < 640; j+=40) {
-                if(x>i && x<i+64){x=xx[i][j];}
-                if(y>j && y<j+64){y=yy[i][j];}
+        for (int i = 1024; i > 0; i-=64) {
+            for (int j = 640; j >0; j-=40) {
+                if(x>i && x<i+64 && i<512){x+=i;return;}
+                if(y>j && y<j+40 && j<320){y+=j;return;}
+                if(x>i && x<i+64 && i>512){x-=i;return;}
+                if(y>j && y<j+40 && j>320){y-=j;return;}
             }
         }
     }
@@ -112,7 +111,7 @@ public class TikTok extends Batterio {
 
     @Override
     protected Batterio clone() throws CloneNotSupportedException {
-        TikTok clone = (TikTok) super.clone();
+        AA clone = (AA) super.clone();
         clone.sensoOrario = !clone.sensoOrario;
         if (centro[1] > y)
             clone.centro[1] = y - raggio;
