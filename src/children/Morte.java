@@ -2,7 +2,7 @@ package children;
 
 import main.*;
 
-public class morte extends Batterio {
+public class Morte extends Batterio {
     //inizializzazione dei 100 batteri
     private static int nextId = 0;
     private static final int bPerRiga = (int) Math.sqrt(mainForm.getNumeroBatteriIniziali()) +
@@ -19,7 +19,7 @@ public class morte extends Batterio {
     private boolean destra, su;
     private boolean first;
 
-    public morte() {
+    public Morte() {
         x = NextX;
         y = NextY;
         NextX += xDistanza;
@@ -72,7 +72,7 @@ public class morte extends Batterio {
 
     @Override
     protected Batterio clone() throws CloneNotSupportedException {
-        morte clone = (morte) super.clone();
+        Morte clone = (Morte) super.clone();
         clone.id = id++;
         return clone;
     }
