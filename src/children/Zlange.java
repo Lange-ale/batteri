@@ -4,6 +4,7 @@ import main.*;
 
 public class Zlange extends Batterio {
     //posizione iniziale dei 100 batteri
+    private static int nextId = 0;
     private static final int bPerRiga = (int) Math.sqrt(mainForm.getNumeroBatteriIniziali()) +
             (Math.sqrt(mainForm.getNumeroBatteriIniziali()) == 0 ? 0 : 1);
     private static final int nRighe = mainForm.getNumeroBatteriIniziali() / bPerRiga +
@@ -16,7 +17,8 @@ public class Zlange extends Batterio {
     private boolean sensoOrario;
     private final static int raggio = 40;
     private final int[] centro;
-
+    private boolean first;
+    private int id;
 
     // mainForm.;
     //Food.:     1024, 640
@@ -32,6 +34,7 @@ public class Zlange extends Batterio {
         }
         //System.out.println(x + "  " + y);
         //System.out.println(nRighe + " " + yDistanza);
+        id = nextId++;
         sensoOrario = true;
         muoviSuX = true;
         centro = new int[]{x, y + raggio};
@@ -50,7 +53,8 @@ public class Zlange extends Batterio {
 
     @Override
     protected void move() throws Exception {
-        //System.out.println("Zlange: " + getHealth());
+        if (id==0 || first) { first = false; return; } //2 istruzioni sprecate per il meme
+
         int d = 1;
         int v = visione < getHealth() ? visione : getHealth() - 1;
         int guardaOgni = v / 20;
@@ -95,6 +99,7 @@ public class Zlange extends Batterio {
         clone.sensoOrario = !clone.sensoOrario;
         if (centro[1] > y)
             clone.centro[1] = y - raggio;
+        clone.id = nextId++;
         return clone;
     }
 }

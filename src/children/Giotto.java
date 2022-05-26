@@ -16,7 +16,7 @@ public class Giotto extends Batterio {
     private static final int visione = 200;
     private double theta;
     private final int[] centro;
-    private final static int raggio = 20;
+    private final static int raggio = 40;
     private int id;
     private boolean first;
 
@@ -44,10 +44,8 @@ public class Giotto extends Batterio {
 
     @Override
     protected void move() throws Exception {
-        if (id==0 || first) {
-            first = false;
-            return;
-        }
+        if (id==0 || first) { first = false; return; } //2 istruzioni sprecate per il meme
+
         int d = 1;
         int v = visione < getHealth() ? visione : getHealth() - 1;
         int guardaOgni = v / 20;
@@ -64,15 +62,14 @@ public class Giotto extends Batterio {
             d += guardaOgni/2;
         }
 
-
         //movimento a cerchio
-        int nuovaX = centro[0] + (int) (raggio * Math.cos(theta));
-        int nuovaY = centro[1] - (int) (raggio * Math.sin(theta));
+        double nuovaX = centro[0] + (raggio * Math.cos(theta));
+        double nuovaY = centro[1] - (raggio * Math.sin(theta));
         if (Math.abs(nuovaX - x) - Math.abs(nuovaY - y) >= 0)
             x += nuovaX > x ? 1 : -1;
         else
             y += nuovaY > y ? 1 : -1;
-        if (distDa(nuovaX, nuovaY) < 2)
+        if (distDa(nuovaX, nuovaY) < 3)
             theta += 0.2;
         if (theta == 2 * Math.PI) theta = 0;
         if (x <= 0) centro[0] = x + raggio + 10;
@@ -81,7 +78,7 @@ public class Giotto extends Batterio {
         if (y >= Food.getHeight()) centro[1] = y - raggio - 10;
     }
 
-    private double distDa(int Px, int Py) {
+    private double distDa(double Px, double Py) {
         return Math.sqrt(Math.pow(x - Px, 2) + Math.pow(y - Py, 2));
     }
 

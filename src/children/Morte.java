@@ -40,10 +40,8 @@ public class Morte extends Batterio {
 
     @Override
     protected void move() throws Exception {
-        if (id==0 || first) {
-            first = false;
-            return;
-        }
+        if (id==0 || first) { first = false; return; } //2 istruzioni sprecate per il meme
+
         int d = 1;
         int v = visione < getHealth() ? visione : getHealth() - 1;
         int guardaOgni = v / 20;
@@ -64,8 +62,12 @@ public class Morte extends Batterio {
         else x += destra ? 1 : -1;
         muoviSuX = (muoviSuX+1)%3;
 
-        if (x >= Food.getWidth() || x <= 0 || y >= Food.getHeight() || y <= 0){
+        if (x >= Food.getWidth() || x <= 0) {
             destra = x < Food.getWidth()/2;
+            su = id % 4 == 0 || id % 4 == 3;
+        }
+        if (y >= Food.getHeight() || y <= 0){
+            destra = id % 4 < 2;
             su = y > Food.getHeight()/2;
         }
     }
