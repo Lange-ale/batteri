@@ -17,7 +17,7 @@ public class Giotto extends Batterio {
     private double theta;
     private final int[] centro;
     private final static int raggio = 20;
-    int id;
+    private int id;
     private boolean first;
 
     public Giotto() {
@@ -36,6 +36,10 @@ public class Giotto extends Batterio {
     void vaiIn(int x, int y) {
         this.x = x;
         this.y = y;
+        centro[0] = x;
+        centro[1] = y + raggio;
+        if (centro[1] > Food.getHeight())
+            centro[1] = y - raggio;
     }
 
     @Override
@@ -84,7 +88,9 @@ public class Giotto extends Batterio {
     @Override
     protected Batterio clone() throws CloneNotSupportedException {
         Giotto clone = (Giotto) super.clone();
-        clone.id = id++;
+        if (centro[1] > y)
+            clone.centro[1] = y - raggio;
+        clone.id = nextId++;
         return clone;
     }
 }

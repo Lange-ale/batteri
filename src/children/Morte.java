@@ -14,7 +14,7 @@ public class Morte extends Batterio {
 
     //proprieta'
     private static final int visione = 200;
-    int id;
+    private int id;
     private int muoviSuX; // 1 e 2 si, 0 no
     private boolean destra, su;
     private boolean first;
