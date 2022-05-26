@@ -2,7 +2,7 @@ package children;
 
 import main.*;
 
-public class AA extends Batterio {
+public class TikTok extends Batterio {
     //posizione iniziale dei 100 batteri
     private static final int bPerRiga = (int) Math.sqrt(mainForm.getNumeroBatteriIniziali()) +
             (Math.sqrt(mainForm.getNumeroBatteriIniziali()) == 0 ? 0 : 1);
@@ -16,31 +16,17 @@ public class AA extends Batterio {
     private boolean sensoOrario;
     private final static int raggio = 40;
     private final int[] centro;
-    private int xx[][], yy[][];
-
-    void creaGrigliaX(){
-        for (int i = 0; i < 1024; i+=64) {
-            for (int j = 0; j < 640; j+=40) {
-                xx[i][j] = j;
-            }
-        }
-    }
-
-    void creaGrigliaY(){
-        for (int i = 0; i < 1024; i+=64) {
-            for (int j = 0; j < 640; j+=40) {
-                yy[i][j] = i;
-            }
-        }
-    }
+    int xO, yO, counter=0, passi=0;
 
     // mainForm.;
     //Food.:     1024, 640
     //Batterio.;
 
-    public AA() {
+    public TikTok() {
         x = NextX;
         y = NextY;
+        xO= NextX;
+        yO= NextY;
         NextX += xDistanza;
         if (NextX >= Food.getWidth()) {
             NextY += yDistanza;
@@ -81,7 +67,7 @@ public class AA extends Batterio {
 
             d += 2;
         }
-
+    /*
         if (muoviSuX) {
             if (sensoOrario)
                 x += y < centro[1] ? 1 : -1;
@@ -97,21 +83,26 @@ public class AA extends Batterio {
         if (x >= Food.getWidth() || x <= 0 || y >= Food.getHeight() || y <= 0) {
             sensoOrario = !sensoOrario;
             muoviSuX = !muoviSuX;
-        }
-        for (int i = 1024; i > 0; i-=64) {
-            for (int j = 640; j >0; j-=40) {
-                if(x>i && x<i+64 && i<512){x+=i;return;}
-                if(y>j && y<j+40 && j<320){y+=j;return;}
-                if(x>i && x<i+64 && i>512){x-=i;return;}
-                if(y>j && y<j+40 && j>320){y-=j;return;}
-            }
-        }
+        }*/
+
+        if(x>xO){for (int i = x; i > xO; i--) {x--;break;}}
+        else{for (int i = x; i < xO; i++) {x++;break;}}
+        if(y>yO){for (int i = y; i > yO; i--) {y--;break;}}
+        else{for (int i = y; i < yO; i++) {y++;break;}}
+        if(counter==0){x++;y++;}
+        if(counter==1){x++;y--;}
+        if(counter==2){x--;y--;}
+        if(counter==3){x--;y++;}
+        passi++;
+        if(passi==15){counter++;passi=0;}
+        if(counter==5){counter=0;}
+
     }
 
 
     @Override
     protected Batterio clone() throws CloneNotSupportedException {
-        AA clone = (AA) super.clone();
+        TikTok clone = (TikTok) super.clone();
         clone.sensoOrario = !clone.sensoOrario;
         if (centro[1] > y)
             clone.centro[1] = y - raggio;
