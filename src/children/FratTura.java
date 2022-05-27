@@ -2,7 +2,7 @@ package children;
 
 import main.*;
 
-public class Zlange2 extends Batterio {
+public class FratTura extends Batterio {
     //posizione iniziale dei 100 batteri
     private static int nextId = 0;
     private static final int bPerRiga = (int) Math.sqrt(mainForm.getNumeroBatteriIniziali()) +
@@ -20,7 +20,7 @@ public class Zlange2 extends Batterio {
     private boolean first;
     private int id;
 
-    public Zlange2() {
+    public FratTura() {
         x = NextX;
         y = NextY;
         NextX += xDistanza;
@@ -36,7 +36,7 @@ public class Zlange2 extends Batterio {
 
     @Override
     protected Batterio clone() throws CloneNotSupportedException {
-        Zlange2 clone = (Zlange2) super.clone();
+        FratTura clone = (FratTura) super.clone();
         clone.sensoOrario = !clone.sensoOrario;
         if (centro[1] > y)
             clone.centro[1] = y - raggio;
