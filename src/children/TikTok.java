@@ -52,7 +52,6 @@ public class TikTok extends Batterio {
 
     @Override
     protected void move() throws Exception {
-        System.out.println("Zlange: " + getHealth());
         int d = 1;
         int v = visione < getHealth() ? visione : getHealth() - 1;
         for (int i = 1; i < v; i += 4) {
