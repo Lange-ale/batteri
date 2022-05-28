@@ -16,7 +16,7 @@ public class Giotto extends Batterio {
     private static final int visione = 200;
     private double theta;
     private final int[] centro;
-    private final static int raggio = 40;
+    private final static int raggio = 80;
     private int id;
     private boolean first;
 
